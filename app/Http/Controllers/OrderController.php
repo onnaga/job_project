@@ -79,7 +79,8 @@ class OrderController extends Controller
 
 
         //we create the order in database only when there is no order like this
-        $old_order = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id]])->first();
+        $old_order = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id] ,['status', '=','pending']])->first();
+
         if ($old_order == null) {
             $new_order = order::create([
                 'user_id' => $user_id,
@@ -89,6 +90,8 @@ class OrderController extends Controller
                 'status' => $status,
                 'company_report' => 'nothing'
             ]);
+
+
         } else {
             order::find($old_order->id)->update([
                 'the_job' => $job,
@@ -97,7 +100,7 @@ class OrderController extends Controller
             $updated_order = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id]])->first();
         }
 
-        return response()->json(['new order' => $new_order, 'url' => $save_path . '\\' . $file_name_in_DB . 'pdf', 'deleted from storage file' => $deleted, 'job' => $job, 'number of characters stored' => $stored, 'old order ' => $old_order, 'updated_order ' => $updated_order]);
+        return response()->json(['new order' => $new_order, 'url' => $save_path . '\\' . $file_name_in_DB . 'pdf', 'deleted from storage file' => $deleted, 'job' => $job, 'number of characters stored' => $stored, 'old order ' => $old_order, 'updated_order ' => $updated_order ]);
     }
 
     public function show_all_Mine()
@@ -105,7 +108,7 @@ class OrderController extends Controller
 
 
         $user_id = Auth::user()->id;
-        $all_in_DB = order::where([['user_id', '=', $user_id]])->get();
+        $all_in_DB = order::where([['user_id', '=', $user_id]],['status', '=','pending'])->get();
         $all = (object)[];
         $save_path = storage_path('\users_cv');
         //there we will change the content
@@ -134,15 +137,15 @@ class OrderController extends Controller
 
 
 
-
-        return response()->json(['user_orders' => $all]);
+        $responded_order=order::where([['user_id', '=', $user_id],['status', '!=','pending']])->get();
+        return response()->json(['user_orders' => $all ,'responded order'=>$responded_order]);
     }
 
     public function show_specified_order($company_id)
     {
 try {
         $user_id = Auth::user()->id;
-        $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id]])->get()->first();
+        $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status', '=','pending']])->get()->first();
         $file_name_in_DB = $order_in_DB->user_cv;
         $save_path = storage_path('\users_cv');
         $headers = ['Content-Type' => 'application/pdf'];
@@ -156,9 +159,11 @@ try {
         // ]);
 
     } catch (\Throwable $th) {
+        $responded_order=order::where([['user_id', '=', $user_id],['company_id', '=', $company_id],['status', '!=','pending']])->get();
          return response()->json([
             'EXP' => $th,
-            'message'=>'maybe you dont add company_id'
+            'message'=>'maybe you dont add company_id or you dont send an unresponded order to this company',
+            'responded order to this company'=>$responded_order
 
         ]);
     }
@@ -170,7 +175,7 @@ try {
     {
         try {
                 $user_id = Auth::user()->id;
-                $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id]])->get()->first();
+                $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status', '=','pending']])->get()->first();
                 $file_name_in_DB = $order_in_DB->user_cv;
                 $save_path = storage_path('\users_cv');
 
@@ -187,9 +192,11 @@ try {
                 ]);
 
             } catch (\Throwable $th) {
+                $responded_order=order::where([['user_id', '=', $user_id],['company_id', '=', $company_id],['status', '!=','pending']])->get();
                  return response()->json([
                     'EXP' => $th,
-                    'message'=>'maybe you dont add company_id'
+                    'message'=>'maybe you dont add company_id or you dont send an unresponded order to this company',
+                    'responded order to this company'=>$responded_order
 
                 ]);
             }
@@ -205,7 +212,7 @@ try {
 
 
         $company_id = auth()->user()->id;
-        $all_in_DB = order::where([['user_id', '=', $company_id]])->get();
+        $all_in_DB = order::where([['company_id', '=', $company_id],['status', '=','pending']])->get();
         $all = (object)[];
         $save_path = storage_path('\users_cv');
         //there we will change the content
@@ -217,7 +224,7 @@ try {
             $key = 'order_' . $key;
             $user_id = $value->user_id;
 
-            $user_name = Company::find($user_id)->name;
+            $user_name = User::find($user_id)->name;
 
             $value->user_name = $user_name;
 
@@ -234,7 +241,96 @@ try {
 
 
 
-
-        return response()->json(['user_orders' => $all]);
+        $responded_order=order::where([['company_id', '=', $company_id],['status', '!=','pending']])->get();
+        return response()->json(['unresponded_orders' => $all ,'responded orders'=>$responded_order]);
     }
+
+    public function show_specified_cv($user_id)
+    {
+try {
+        $company_id = auth()->user()->id;
+        $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status', '=','pending']])->get()->first();
+        $file_name_in_DB = $order_in_DB->user_cv;
+        $save_path = storage_path('\users_cv');
+        $headers = ['Content-Type' => 'application/pdf'];
+
+        return response()->file($save_path.'\\'. $file_name_in_DB . '.pdf', $headers);
+
+            // $pdf = base64_encode(file_get_contents($save_path . '\\' . $file_name_in_DB . '.pdf'));
+        // return response()->json([
+        //     'pdf' => $pdf,
+        //     'id' => $id
+        // ]);
+
+    } catch (\Throwable $th) {
+         return response()->json([
+
+            'EXP' => $th,
+            'message'=>'maybe you dont add user_id or the user havent unresponded order to your company',
+            'responded orders'=>order::where([['company_id', '=', $company_id],['status', '!=','pending']])->get(),
+        ]);
+    }
+
+
+    }
+
+
+    public function answer_to_order(Request $request  , $user_id)
+    {
+
+
+        $save_path = storage_path('\users_cv');
+
+try {
+        $company_id = auth()->user()->id;
+
+        $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status','=','pending']])->get()->first();
+        $file_name_in_DB = $order_in_DB->user_cv;
+        $save_path = storage_path('\users_cv');
+
+        $validated = Validator::make($request->all(), ['status' => 'required','report' => 'required',]);
+
+        //Check if the validation failed, return your custom formatted code here.
+        if ($validated->fails()) {
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        }
+
+
+
+
+        $old_order =order::where([
+        ['user_id', '=', $user_id],
+        ['company_id', '=', $company_id],
+        ['company_report', '=', 'nothing']
+        ])->first();
+        if($old_order==null){
+            return response()->json([
+                'message '=>'there is no unresponded orders for this user'
+            ]);
+        }
+        else{
+        $order_id=$old_order->id;
+        $pdf = base64_encode(file_get_contents($save_path . '\\' . $file_name_in_DB . '.pdf'));
+
+        $updated_order=order::find($order_id)->update(['status'=>$request->status ,'user_cv'=>strlen($pdf), 'company_report'=>$request->report]);
+
+       return response()->json(['updated'=>$updated_order,'status'=>$request->status , 'report'=>$request->report]);
+        }
+
+    } catch (\Throwable $th) {
+        $responded_order=order::where([['user_id','=',$user_id],['company_id', '=', $company_id],['status', '!=','pending']])->get();
+         return response()->json([
+            'EXP' => $th,
+            'message'=>'maybe you dont add user_id ',
+            'message 2'=>'there is no unresponded orders for this user',
+            'responded order for the user'=>$responded_order,
+
+        ]);
+    }
+
+
+    }
+
+
+
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
 
             $table->string('the_job')->nullable();
-            $table->string('user_cv');
+            $table->text('user_cv');
             $table->string('status');
             $table->string('company_report')->nullable();
 

@@ -45,7 +45,7 @@ Route::controller(OrderController::class)->group(function(){
     //for users
     Route::post('new_order','make_order')->middleware('auth:api');
     Route::get('get_my_orders','show_all_Mine')->middleware('auth:api');
-    Route::get('get_one_cv/{company_id}','show_specified_order')->middleware('auth:api');
+    Route::get('get_one_cv/{order_id}','show_specified_order')->middleware('auth:api');
     Route::delete('delete_order/{company_id}','delete_order')->middleware('auth:api');
 
 
@@ -55,6 +55,9 @@ Route::controller(OrderController::class)->group(function(){
 
     Route::get('get_my_orders_company','show_all_Mine_company')->middleware('auth:apiCompany');
 
+    Route::get('get_one_cv_company/{user_id}','show_specified_cv')->middleware('auth:apiCompany');
+
+    Route::post('company_answer/{user_id}','answer_to_order')->middleware('auth:apiCompany');
     //for admin
 });
 
