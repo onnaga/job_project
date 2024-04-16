@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\order;
 use App\Models\Company;
 use App\Models\User;
+use App\Notifications\WorkNote;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -245,9 +247,10 @@ try {
         return response()->json(['unresponded_orders' => $all ,'responded orders'=>$responded_order]);
     }
 
-    public function show_specified_cv($user_id)
+    public function show_specified_cv(Request $request)
     {
 try {
+    $user_id=$request->user_id;
         $company_id = auth()->user()->id;
         $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status', '=','pending']])->get()->first();
         $file_name_in_DB = $order_in_DB->user_cv;
@@ -275,13 +278,15 @@ try {
     }
 
 
-    public function answer_to_order(Request $request  , $user_id)
+    public function answer_to_order(Request $request)
     {
 
+        $user_id=$request->user_id;
+        $salary=$request->salary;
 
         $save_path = storage_path('\users_cv');
 
-try {
+// try {
         $company_id = auth()->user()->id;
 
         $order_in_DB = order::where([['user_id', '=', $user_id], ['company_id', '=', $company_id],['status','=','pending']])->get()->first();
@@ -303,30 +308,40 @@ try {
         ['company_id', '=', $company_id],
         ['company_report', '=', 'nothing']
         ])->first();
-        if($old_order==null){
-            return response()->json([
-                'message '=>'there is no unresponded orders for this user'
-            ]);
-        }
-        else{
+
+
         $order_id=$old_order->id;
         $pdf = base64_encode(file_get_contents($save_path . '\\' . $file_name_in_DB . '.pdf'));
 
         $updated_order=order::find($order_id)->update(['status'=>$request->status ,'user_cv'=>strlen($pdf), 'company_report'=>$request->report]);
 
+        //here we will store the work insided the new worker table
+        if($request->status=='accepted'){
+            $a=new NowWorkerController();
+            $array=['job'=>$old_order->the_job,'salary'=>$salary];
+            $a->create($array,$user_id,$company_id);
+
+            }
+
+
+            $the_response=order::where('id',$order_id)->first();
+            $note= new WorkNote($the_response);
+            $user=User::where('id',$user_id)->first();
+            $user->notify($note);
+
        return response()->json(['updated'=>$updated_order,'status'=>$request->status , 'report'=>$request->report]);
-        }
 
-    } catch (\Throwable $th) {
-        $responded_order=order::where([['user_id','=',$user_id],['company_id', '=', $company_id],['status', '!=','pending']])->get();
-         return response()->json([
-            'EXP' => $th,
-            'message'=>'maybe you dont add user_id ',
-            'message 2'=>'there is no unresponded orders for this user',
-            'responded order for the user'=>$responded_order,
 
-        ]);
-    }
+    // } catch (\Throwable $th) {
+    //     $responded_order=order::where([['user_id','=',$user_id],['company_id', '=', $company_id],['status', '!=','pending']])->get();
+    //      return response()->json([
+    //         'EXP' => $th,
+    //         'message'=>'maybe you dont add user_id ',
+    //         'message 2'=>'there is no unresponded orders for this user',
+    //         'responded order for the user'=>$responded_order,
+
+    //     ]);
+    // }
 
 
     }

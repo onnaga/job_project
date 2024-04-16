@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class now_worker extends Model
+class notification extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'user_id',
-        'company_id',
-        'job',
-        'salary'
+        'data',
+        'read_at',
+        'notifiable',
+        'type'
     ];
+
 }
