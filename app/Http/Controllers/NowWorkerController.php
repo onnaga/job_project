@@ -4,20 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\now_worker;
 use App\Models\old_work;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class NowWorkerController extends Controller
 {
-
-
-    public function index()
-    {
-
-    }
-
-
     public function create($details ,$id,$company_id)
     {
+
+
         try {
         $now_worker=now_worker::where('user_id',$id)->first();
         $old_worker= null;
@@ -34,7 +29,13 @@ class NowWorkerController extends Controller
             'job'=>$now_worker->job,
             'salary'=>$now_worker->salary,
         ]);
-
+        if(!$details->job)
+        $updated_now_worker=now_worker::where('user_id',$id)->update([
+            'company_id'=>$company_id,
+            'job'=>$now_worker->job,
+            'salary'=>$details->salary,
+        ]);
+        else
         $updated_now_worker=now_worker::where('user_id',$id)->update([
             'company_id'=>$company_id,
             'job'=>$details->job,
@@ -60,10 +61,26 @@ class NowWorkerController extends Controller
 }
 
 
-    public function store(Request $request)
-    {
-        //
+public function update(Request $request )
+{
+
+
+    $validated = Validator::make($request->all(), ['user_id' => 'required','salary' => 'required',]);
+
+    //Check if the validation failed, return your custom formatted code here.
+    if ($validated->fails()) {
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
     }
+
+    $company_id=auth()->user()->id;
+    $user_id = $request->user_id;
+    $details=(object)['job'=>$request->the_job,'salary'=>$request->salary];
+    $a=new NowWorkerController();
+    $the_return_from_NowWorkerController =$a->create($details,$user_id,$company_id);
+
+    return response()->json(['the_return_from_NowWorkerController' =>$the_return_from_NowWorkerController]);
+
+}
 
 
     public function show(Request $request )
@@ -81,16 +98,9 @@ class NowWorkerController extends Controller
 
     }
 
-    public function edit(now_worker $now_worker)
-    {
-        //
-    }
 
 
-    public function update(Request $request, now_worker $now_worker)
-    {
-        //
-    }
+
     public function show_employees(Request $request ){
 
         $company_id=$request->company_id;
@@ -99,7 +109,7 @@ class NowWorkerController extends Controller
             $company_id=$request->company_id;
             $now_worker=now_worker::where('company_id', $company_id)->first();
             $old_works=old_work::where('company_id',$company_id)->get();
-            return response(["id"=>$company_id , 'recent work'=>$now_worker , 'old work'=>$old_works]);
+            return response(["id"=>$company_id , 'recent workers'=>$now_worker , 'old workers'=>$old_works]);
         } catch (\Throwable $th) {
             return response([  'th'=>$th  ,"error"=>'maybe the id is not exist']);
         }
@@ -107,8 +117,6 @@ class NowWorkerController extends Controller
 
 
     }
-    public function destroy(now_worker $now_worker)
-    {
-        //
-    }
+
+
 }

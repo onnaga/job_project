@@ -64,7 +64,7 @@ if ($photo_id_in_user_table!=null) {
 
             if($request->hasFile('photo')){
               $image = $request->file('photo');
-              $filename = time() . '.' . $image->getClientOriginalExtension();
+              $filename = $user_id.rand(0,9999999) . '.' . $image->getClientOriginalExtension();
 
               if (!file_exists($save_path)) {
                 mkdir($save_path, 777, true);
@@ -85,12 +85,12 @@ if ($photo_id_in_user_table!=null) {
                 $is_created= photo::find($photo_id_in_user_table)->update(['path'=>$filename,]);
 
 
-                $new_photo=photo::all()->where('id',$photo_id_in_user_table);
+                $new_photo=photo::find($photo_id_in_user_table);
             }
 
 
 
-        return response()->json(['new photo'=>$new_photo[0] ,'url' =>$save_path.'\\'.$filename ,'is created in database'=>$is_created ,'photo id in the users table'=>User::find($user_id)->photo_id  ,'photo deleted in DB'=>$photo_name_in_DB ,'deleted from storage file'=>$deleted ,'delete path'=>$save_path.'\\' .$photo_name_in_DB]);
+        return response()->json(['new photo'=>$new_photo ,'url' =>$save_path.'\\'.$filename ,'is created in database'=>$is_created ,'photo id in the users table'=>User::find($user_id)->photo_id  ,'photo deleted in DB'=>$photo_name_in_DB ,'deleted from storage file'=>$deleted ,'delete path'=>$save_path.'\\' .$photo_name_in_DB]);
     }
 
 

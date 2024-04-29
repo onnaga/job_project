@@ -19,9 +19,6 @@ class CompanyController extends Controller
     {
         $this->middleware('auth:apiCompany', ['except' => ['login','register']]);
     }
-    /**
-     * Display a listing of the resource.
-     */
 
      public function login(Request $request)
     {
