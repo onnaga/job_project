@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\follow;
 use App\Models\offers;
 use App\Models\specialization;
+use App\Models\User;
+use App\Notifications\follow as following;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -67,6 +70,15 @@ public function show_company_orders(Request $request){
                 'official holidays'=>$request->official_holidays,
                 'offer end at'=>$request->offer_end_at
             ]);
+
+            $followers=follow::where('company_id',$company_id)->get();
+            // return response()->json(['followers'=>$followers]);
+            foreach ($followers as $follower) {
+                $the_response=$the_offer;
+                $note= new following($the_response);
+                $user=User::where('id',$follower->user_id)->first();
+                $user->notify($note);
+            }
 
             return response()->json(['the_offer_created'=>$the_offer]);
 

@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompaniesPhotoController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NowWorkerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserOfferController;
 use App\Models\now_worker;
 use App\Models\offers;
@@ -114,3 +116,16 @@ Route::get('accept_the_offer','accept_company_offer')->middleware('auth:api');
 Route::get('offer_accepters','show_accepters')->middleware('auth:apiCompany');
 Route::get('offer_orders','offer_orders')->middleware('auth:apiCompany');
 });
+
+
+Route::controller(RatingController::class)->group(function(){
+    Route::post('add_rate_for_offer','create')->middleware('auth:api');
+    Route::post('update_rate_for_offer','update')->middleware('auth:api');
+    Route::get('show_rates_for_offer','show_rate_for_offer');
+
+    });
+
+    Route::controller(FollowController::class)->group(function(){
+        Route::post('follow_company','create')->middleware('auth:api');
+        Route::post('unfollow_company','delete')->middleware('auth:api');
+    });

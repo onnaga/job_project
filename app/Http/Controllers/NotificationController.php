@@ -18,7 +18,7 @@ class NotificationController extends Controller
 
 
         $user_id=$request->id;
-        $all_notes=notification::where([['notifiable_id', '=', $user_id], ['notifiable_type', '=', 'App\Models\User']])->get();
+        $all_notes=notification::where([['notifiable_id', '=', $user_id], ['notifiable_type', '=', 'App\Models\User'],['type', '=', 'App\Notifications\WorkNote']])->get();
 
             $all_data = [];
             $i=0;
@@ -42,14 +42,15 @@ class NotificationController extends Controller
 } catch (\Throwable $th) {
     return response()->json(['th'=>$th]);
 }
-    }
+
+}
     public function show_company(Request $request)
     {
         try {
 
 
         $company_id=auth()->user()->id;
-        $all_notes=notification::where([['notifiable_id', '=', $company_id], ['notifiable_type', '=', 'App\Models\Company']])->get();
+        $all_notes=notification::where([['notifiable_id', '=', $company_id], ['notifiable_type', '=', 'App\Models\Company'],['type', '=', 'App\Notifications\WorkNote']])->get();
 
             $all_data = [];
             $i=0;
