@@ -40,7 +40,7 @@ class AuthController extends Controller
         if (!$token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Please sign up first ',
+                'message' => 'The password is wrong OR you dont signed up  ',
             ], 401);
         }
 
@@ -135,7 +135,9 @@ class AuthController extends Controller
     }
 
     //All went well
-    $token = Auth::login($user);
+     Auth::login($user);
+    $credentials = $request->only('email', 'password');
+    $token = Auth::attempt($credentials);
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',

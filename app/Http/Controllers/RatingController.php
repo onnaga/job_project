@@ -82,8 +82,8 @@ else{
 
 
     }
-    public function show_rate_for_offer(Request $request){
-        $offer_id= $request->offer_id;
+    public function show_rate_for_offer($offer_id){
+
 
         $all_rates= rating::where(['offer_id'=>$offer_id])->get();
         $rate_star=0;
@@ -93,7 +93,11 @@ else{
         $sum+=$rate->star_rating;
         $i++;
         }
-        $rate_star=$sum / $i;
+        try {
+            $rate_star=$sum / $i;
+        } catch (\Throwable $th) {
+            $rate_star= 0;
+        }
 
 
 

@@ -19,11 +19,11 @@ return new class extends Migration
             $table->bigInteger('company_id')->unsigned()->nullable();
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
             $table->integer('salary')->nullable();
-            $table->string('the days')->nullable();
-            $table->string('hour begin')->nullable();
+            $table->string('the_days')->nullable();
+            $table->string('hour_begin')->nullable();
             $table->string('period')->nullable();
-            $table->boolean('official holidays')->nullable();
-            $table->string('offer end at');
+            $table->boolean('official_holidays')->nullable();
+            $table->string('offer_end_at');
             $table->timestamps();
         });
     }

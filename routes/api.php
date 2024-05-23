@@ -17,6 +17,7 @@ use App\Http\Controllers\UserOfferController;
 use App\Models\now_worker;
 use App\Models\offers;
 
+
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
@@ -121,7 +122,7 @@ Route::get('offer_orders','offer_orders')->middleware('auth:apiCompany');
 Route::controller(RatingController::class)->group(function(){
     Route::post('add_rate_for_offer','create')->middleware('auth:api');
     Route::post('update_rate_for_offer','update')->middleware('auth:api');
-    Route::get('show_rates_for_offer','show_rate_for_offer');
+    Route::get('show_rates_for_offer/{offer_id}','show_rate_for_offer');
 
     });
 

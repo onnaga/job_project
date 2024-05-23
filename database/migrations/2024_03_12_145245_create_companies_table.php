@@ -22,7 +22,7 @@ return new class extends Migration
             $table->bigInteger('photo_id')->unsigned()->nullable();
             $table->foreign('photo_id')->references('id')->on('companies_photos')->onDelete('set null');
             $table->string('phone')->nullable();
-            $table->string('founded in')->nullable();
+            $table->string('founded_in')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

@@ -43,7 +43,7 @@ class CompanyController extends Controller
         if (!$token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Please sign up first ',
+                'message' => 'The password is wrong OR you dont signed up',
             ], 401);
         }
 
@@ -126,7 +126,10 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
         }
 
         //All went well
-        $token = auth('apiCompany')->login($company);
+        auth('apiCompany')->login($company);
+        $credentials = $request->only('email', 'password');
+        $token = auth('apiCompany')->attempt($credentials);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'User created successfully',

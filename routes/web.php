@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::controller(AdminController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('add_admin', 'register');
+    Route::post('delete_admin', 'deleteAdmin');
+    Route::post('logout', 'logout');
+    Route::get('get_offers','getAllOffers');
+    Route::get('companies','getAllCompanies');
+    Route::get('specializations','getAllSpecializations');
+
+});
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });

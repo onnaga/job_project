@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserOfferController extends Controller
 {
+    //note for user if company accept the order
     public function accept_company_offer(Request $request){
         try {
         $offer_id=$request->offer_id;

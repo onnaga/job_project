@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wdth,wght@50..200,200..900&display=swap');
+
+
+body {
+    font-family: 'Josefin Sans', cursive;
+  }
+  h2{
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    color: var(--bs-heading-color);
+  }
+  h5{
+    margin: 30px;
+  }
+
+  li{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  label{  padding-bottom: 4px;}
+#main_content {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f1f1;
+    position:fixed
+  }
+
+  #container {
+    width: 40%;
+    height: 50%;
+    margin: 10% auto;
+    padding: 20px 15px;
+    border-radius: 10%;
+    background-color: #d2bfbf;
+    position: relative;
+}
+.formLogin{
+    position: relative;
+    margin-top: auto;
+
+}
+
+.login_btn{
+
+    display: block;
+    margin: 20px auto;
+    width: 40%;
+
+}
+
+.checkMe{
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    width: 40%;
+
+    padding-left: 55px;
+
+
+}
+
+.list-btn{
+    margin: 22px 3px;
+}
+
+.login-btnlist{
+    margin: 100px 13px;
+    text-align: center;
+}
+.Links{
+
+    text-decoration: none;
+}
+
+.alert_div{
+    margin: 10px 3px;
+    text-align: center;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+
+.footer_div{
+    margin: 22px 3px;
+    text-align: center;
+}
+.navbarMain{
+    margin-top: 40px;
+}
+
+.radio_div{
+    margin-right: 40px;
+}

@@ -39,8 +39,8 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+            'driver' => 'jwt',
+            'provider' => 'admins',
         ],
 
 
@@ -82,6 +82,10 @@ return [
         'companies' => [
             'driver' => 'eloquent',
             'model' => App\Models\Company::class,
+         ],
+         'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\admin::class,
          ],
     ],
 
