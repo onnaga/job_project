@@ -18,7 +18,7 @@ class RatingController extends Controller
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
         }
         $user_id = auth()->user()->id;
         $in_db=rating::where([['user_id','=',$user_id],['offer_id','=',$offer_id]])->first();
@@ -32,7 +32,7 @@ class RatingController extends Controller
 }
 else{
 
-    return response()->json(['message'=>'you have rated this offer try to update your rate']);
+    return response()->json(['message'=>'you have rated this offer try to update your rate'],400);
 }
 
 
@@ -52,15 +52,15 @@ else{
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
         }
         if($the_offer==null){
-            return response()->json(['message'=>'the offer id is wrong']);
+            return response()->json(['message'=>'the offer id is wrong'],401);
         }
         $user_id = auth()->user()->id;
         $in_db=rating::where([['user_id','=',$user_id],['offer_id','=',$offer_id]])->first();
         if ($in_db==null) {
-    return response()->json(['message'=>'you did not rate this offer try to create your rate']);
+    return response()->json(['message'=>'you did not rate this offer try to create your rate'],400);
 }
 else{
     $the_rate=$in_db->update([

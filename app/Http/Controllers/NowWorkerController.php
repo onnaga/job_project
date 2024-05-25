@@ -53,10 +53,10 @@ class NowWorkerController extends Controller
             ]);
         }
 
-        return response(['id'=>$id,'company_id'=>$company_id , 'now worker'=>$now_worker,'old worker'=>$old_worker , 'updated'=>$updated_now_worker]);
+        return response(['id'=>$id,'company_id'=>$company_id , 'now_worker'=>$now_worker,'old_worker'=>$old_worker , 'updated'=>$updated_now_worker]);
 
     } catch (\Throwable $th) {
-        return response(['error'=>$th]);
+        return response(['error'=>$th],400);
     }
 }
 
@@ -65,11 +65,11 @@ public function update(Request $request )
 {
 
 
-    $validated = Validator::make($request->all(), ['user_id' => 'required','salary' => 'required',]);
+    $validated = Validator::make($request->all(), ['user_id' => 'required','salary' => 'required']);
 
     //Check if the validation failed, return your custom formatted code here.
     if ($validated->fails()) {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
     }
 
     $company_id=auth()->user()->id;
@@ -90,7 +90,7 @@ public function update(Request $request )
             $id=$request->id;
             $now_worker=now_worker::where('user_id',$id)->first();
             $old_works=old_work::where('user_id',$id)->get();
-            return response(["id"=>$id , 'recent work'=>$now_worker , 'old work'=>$old_works]);
+            return response(["id"=>$id , 'recent_work'=>$now_worker , 'old_work'=>$old_works]);
         } catch (\Throwable $th) {
             return response([  'th'=>$th  ,"error"=>'maybe the id is not exist']);
         }
@@ -109,7 +109,7 @@ public function update(Request $request )
             $company_id=$request->company_id;
             $now_worker=now_worker::where('company_id', $company_id)->first();
             $old_works=old_work::where('company_id',$company_id)->get();
-            return response(["id"=>$company_id , 'recent workers'=>$now_worker , 'old workers'=>$old_works]);
+            return response(["id"=>$company_id , 'recent_workers'=>$now_worker , 'old_workers'=>$old_works]);
         } catch (\Throwable $th) {
             return response([  'th'=>$th  ,"error"=>'maybe the id is not exist']);
         }

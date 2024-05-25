@@ -71,7 +71,7 @@ class NotificationController extends Controller
         return response()->json( $all_data );
 
 } catch (\Throwable $th) {
-    return response()->json(['error'=>$th->getMessage()]);
+    return response()->json(['error'=>$th->getMessage()],400);
 }
     }
 

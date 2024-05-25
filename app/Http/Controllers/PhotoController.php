@@ -35,7 +35,7 @@ class PhotoController extends Controller
     //Check if the validation failed, return your custom formatted code here.
     if($validated->fails())
     {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
     }
 //If not failed, the code will reach here
 
@@ -75,7 +75,7 @@ if ($photo_id_in_user_table!=null) {
             //we create the photo only when the user dont have an id
             if($photo_id_in_user_table==null){
             $new_photo= photo::create([
-                'user name'=>Auth::user()->name,
+                'user_name'=>Auth::user()->name,
                 'path' => $filename,
 
             ]);
@@ -90,7 +90,7 @@ if ($photo_id_in_user_table!=null) {
 
 
 
-        return response()->json(['new photo'=>$new_photo ,'url' =>$save_path.'\\'.$filename ,'is created in database'=>$is_created ,'photo id in the users table'=>User::find($user_id)->photo_id  ,'photo deleted in DB'=>$photo_name_in_DB ,'deleted from storage file'=>$deleted ,'delete path'=>$save_path.'\\' .$photo_name_in_DB]);
+        return response()->json(['new_photo'=>$new_photo ,'url' =>$save_path.'\\'.$filename ,'is_created_in_database'=>$is_created ,'photo_id_in_the_users_table'=>User::find($user_id)->photo_id  ,'photo_deleted_in_DB'=>$photo_name_in_DB ,'deleted_from_storage_file'=>$deleted ,'delete_path'=>$save_path.'\\' .$photo_name_in_DB]);
     }
 
 

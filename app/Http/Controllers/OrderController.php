@@ -33,7 +33,7 @@ class OrderController extends Controller
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
         }
         //If not failed, the code will reach here
 
@@ -42,7 +42,7 @@ class OrderController extends Controller
         try {
             $company_id = Company::where('name', $request->company_name)->get()->first()->id;
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'the name of the company is not correct ']);
+            return response()->json(['error' => 'the name of the company is not correct'],400);
         }
 
         $job = $request->job;
@@ -104,7 +104,7 @@ class OrderController extends Controller
             $updated_order = order::find($old_order->id);
         }
 
-        return response()->json(['new order' => $new_order, 'url' => $save_path . '\\' . $file_name_in_DB . 'pdf', 'deleted from storage file' => $deleted, 'job' => $job, 'number of characters stored' => $stored, 'old order ' => $old_order, 'updated_order ' => $updated_order ]);
+        return response()->json(['new_order' => $new_order, 'url' => $save_path . '\\' . $file_name_in_DB . 'pdf', 'deleted_from_storage_file' => $deleted, 'job' => $job, 'number_of_characters_stored' => $stored, 'old_order ' => $old_order, 'updated_order ' => $updated_order ]);
     }
 
     public function show_all_Mine()
@@ -143,7 +143,7 @@ class OrderController extends Controller
 
         $responded_order=order::where([['user_id', '=', $user_id],['status', '!=','pending']])->get();
         $un_responded_order=order::where([['user_id', '=', $user_id],['status', '=','pending']])->get();
-        return response()->json(['all_orders' => $all ,'responded order'=>$responded_order, 'un responded ordedr'=>$un_responded_order]);
+        return response()->json(['all_orders' => $all ,'responded_order'=>$responded_order, 'un_responded_order'=>$un_responded_order]);
     }
 
     public function show_specified_order($company_id)
@@ -193,8 +193,8 @@ try {
 
                 $deleted_from_DB=order::find($order_in_DB->id)->delete();
                 return response()->json([
-                    'deleted from storage file '=>$deleted,
-                    'delete from database '=>$deleted_from_DB
+                    'deleted__from_storage_file '=>$deleted,
+                    'delete_from_database '=>$deleted_from_DB
                 ]);
 
             } catch (\Throwable $th) {
@@ -202,7 +202,7 @@ try {
                  return response()->json([
                     'EXP' => $th,
                     'message'=>'maybe you dont add company_id or you dont send an unresponded order to this company',
-                    'responded order to this company'=>$responded_order
+                    'responded_order_to_this_company'=>$responded_order
 
                 ]);
             }
@@ -218,8 +218,6 @@ try {
 
     public function show_all_Mine_company()
     {
-
-
         $company_id = auth()->user()->id;
         $all_in_DB = order::where([['company_id', '=', $company_id],['status', '=','pending']])->get();
         $all = (object)[];
@@ -262,7 +260,7 @@ try {
 
         if($validated->fails())
         {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
         }
 
         $user_id=$request->user_id;
@@ -297,7 +295,7 @@ try {
 
 
         $responded_order=order::where([['company_id', '=', $company_id],['user_id', '=', $user_id],['status', '!=','pending']])->get();
-        return response()->json(['unresponded_orders' => $all ,'responded orders'=>$responded_order]);
+        return response()->json(['unresponded_orders' => $all ,'responded_orders'=>$responded_order]);
     }
     public function show_specified_cv(Request $request)
     {
@@ -322,7 +320,7 @@ try {
 
             'EXP' => $th,
             'message'=>'maybe you dont add user_id or the user havent unresponded order to your company',
-            'responded orders'=>order::where([['company_id', '=', $company_id],['status', '!=','pending']])->get(),
+            'responded_orders'=>order::where([['company_id', '=', $company_id],['status', '!=','pending']])->get(),
         ]);
     }
 
@@ -349,7 +347,7 @@ try {
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
         }
 
 
@@ -381,7 +379,7 @@ try {
             $user=User::where('id',$user_id)->first();
             $user->notify($note);
 
-       return response()->json(['updated'=>$updated_order,'status'=>$request->status , 'report'=>$request->report ,'$array'=>$array , '$the_return_from_NowWorkerController' =>$the_return_from_NowWorkerController->original]);
+       return response()->json(['updated'=>$updated_order,'status'=>$request->status , 'report'=>$request->report ,'array'=>$array , 'the_return_from_NowWorkerController' =>$the_return_from_NowWorkerController->original]);
 
 
     } catch (\Throwable $th) {
@@ -389,8 +387,8 @@ try {
          return response()->json([
             'EXP' => $th,
             'message'=>'maybe you dont add user_id ',
-            'message 2'=>'there is no unresponded orders for this user',
-            'responded order for the user'=>$responded_order,
+            'message2'=>'there is no unresponded orders for this user',
+            'responded_order_for_the_user'=>$responded_order,
 
         ]);
     }

@@ -33,7 +33,7 @@ class CompanyController extends Controller
     //Check if the validation failed, return your custom formatted code here.
     if($validated->fails())
     {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
     }
 
     //If not failed, the code will reach here
@@ -56,7 +56,7 @@ class CompanyController extends Controller
                     'token' => $token,
                     'type' => 'bearer',
                 ]
-            ]);
+            ],200);
 
     }
 
@@ -79,7 +79,7 @@ class CompanyController extends Controller
         //Check if the validation failed, return your custom formatted code here.
         if($validated->fails())
         {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
         }
 
         //If not failed, the code will reach here
@@ -94,7 +94,7 @@ class CompanyController extends Controller
                 $specialization_id = specialization::select('id')->where('specialization' ,$request->specialization)->get()[0]->id;
                 }
                 else {
-                    return response()->json(['error' =>$th ]);
+                    return response()->json(['error' =>$th ],400);
                 }
 
             }
@@ -117,7 +117,7 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
                     'password' => Hash::make($request->password),
                     'specialization_id'=> $specialization_id,
                     'phone'=>$request->phone,
-                    'founded in'=>$request->found_date,
+                    'founded_in'=>$request->found_date,
                 ]);
 
         //This would be your own error response, not linked to validation
@@ -181,10 +181,6 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
             "company_age"=> auth('apiCompany')->user()->age,
             "created_at"=> auth('apiCompany')->user()->created_at,
             "updated_at"=> auth('apiCompany')->user()->updated_at,
-
-
-
-
             ]
         ]);
     }

@@ -39,12 +39,12 @@ class UserOfferController extends Controller
 
 
 
-        return response()->json(['message'=>'you accebted it before']);
+        return response()->json(['message'=>'you accepted it before'],400);
 
 
 
     } catch (\Throwable $th) {
-        return response()->json(['error' =>'the offer id is wrong','message'=>$th->getMessage()]);
+        return response()->json(['error' =>'the offer id is wrong','message'=>$th->getMessage()],401);
     }
 
     }
@@ -55,7 +55,7 @@ class UserOfferController extends Controller
         $i=0;
     $the_offers=user_offer::where('offer_id',$offer_id)->get();
     if ($the_offers->isEmpty()) {
-        return response()->json(['message'=>'there is no accepters or offer_id is wrong']);
+        return response()->json(['message'=>'there is no accepters or offer_id is wrong'],400);
     }
         $users_array=[];
     foreach ($the_offers as $single) {
@@ -77,7 +77,7 @@ class UserOfferController extends Controller
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
         }
         $offer_id = $request->offer_id;
         $the_orders=order::where('offer_id', $offer_id)->get();

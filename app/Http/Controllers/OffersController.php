@@ -22,10 +22,10 @@ public function show_company_orders(Request $request){
 
     $company_id=$request->company_id;
 
-    $ended_offers=offers::where([['company_id',$company_id],['offer end at','<=',Carbon::now()]])->get();
+    $ended_offers=offers::where([['company_id',$company_id],['offer_end_at','<=',Carbon::now()]])->get();
 
-    $recent_offers=offers::where([['company_id',$company_id],['offer end at','>',Carbon::now()]])->get();
-    return response()->json(['$ended_offers'=>$ended_offers , 'recent offers'=>$recent_offers]);
+    $recent_offers=offers::where([['company_id',$company_id],['offer_end_at','>',Carbon::now()]])->get();
+    return response()->json(['$ended_offers'=>$ended_offers , 'recent_offers'=>$recent_offers]);
 
 }
 
@@ -45,7 +45,7 @@ public function show_company_orders(Request $request){
 
             //Check if the validation failed, return your custom formatted code here.
             if ($validated->fails()) {
-                return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+                return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
             }
             //If not failed, the code will reach here
 
@@ -60,15 +60,15 @@ public function show_company_orders(Request $request){
 
             }
             $the_offer=offers::create([
-                'the job'=>$request->the_job,
+                'the_job'=>$request->the_job,
                 'company_id'=>$company_id,
                 'specialization_wanted'=>$spec_in_DB->id,
                 'salary'=>$request->salary,
-                'the days'=>$request->the_days,
-                'hour begin'=>$request->hour_begin,
+                'the_days'=>$request->the_days,
+                'hour_begin'=>$request->hour_begin,
                 'period'=>$request->period,
-                'official holidays'=>$request->official_holidays,
-                'offer end at'=>$request->offer_end_at
+                'official_holidays'=>$request->official_holidays,
+                'offer_end_at'=>$request->offer_end_at
             ]);
 
             $followers=follow::where('company_id',$company_id)->get();
@@ -87,10 +87,10 @@ public function show_company_orders(Request $request){
     public function show(){
         $company_id=auth()->user()->id;
 
-        $ended_offers=offers::where([['company_id',$company_id],['offer end at','<=',Carbon::now()]])->get();
+        $ended_offers=offers::where([['company_id',$company_id],['offer_end_at','<=',Carbon::now()]])->get();
 
-        $recent_offers=offers::where([['company_id',$company_id],['offer end at','>',Carbon::now()]])->get();
-        return response()->json(['$ended_offers'=>$ended_offers , 'recent offers'=>$recent_offers]);
+        $recent_offers=offers::where([['company_id',$company_id],['offer_end_at','>',Carbon::now()]])->get();
+        return response()->json(['$ended_offers'=>$ended_offers , 'recent_offers'=>$recent_offers]);
 
     }
 
@@ -98,8 +98,8 @@ public function show_company_orders(Request $request){
     public function show_all(){
         $all_offers=offers::all();
 
-        $recent_offers=offers::where([['offer end at','>',Carbon::now()]])->get();
-        return response()->json(['all_offers'=>$all_offers , 'recent offers'=>$recent_offers]);
+        $recent_offers=offers::where([['offer_end_at','>',Carbon::now()]])->get();
+        return response()->json(['all_offers'=>$all_offers , 'recent_offers'=>$recent_offers]);
 
 
     }
@@ -123,7 +123,7 @@ public function show_company_orders(Request $request){
 
             //Check if the validation failed, return your custom formatted code here.
             if ($validated->fails()) {
-                return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+                return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
             }
 
 
@@ -136,20 +136,20 @@ public function show_company_orders(Request $request){
         }
             $updated_offer=$the_offer->update([
 
-                    'the job'=>$request->the_job,
+                    'the_job'=>$request->the_job,
                     'company_id'=>$company_id,
                     'specialization_wanted'=>$spec_in_DB->id,
                     'salary'=>$request->salary,
-                    'the days'=>$request->the_days,
-                    'hour begin'=>$request->hour_begin,
+                    'the_days'=>$request->the_days,
+                    'hour_begin'=>$request->hour_begin,
                     'period'=>$request->period,
-                    'official holidays'=>$request->official_holidays,
-                    'offer end at'=>$request->offer_end_at
+                    'official_holidays'=>$request->official_holidays,
+                    'offer_end_at'=>$request->offer_end_at
 
 
             ]);
 
-            return response()->json(['update'=>$updated_offer,'the updated offer'=>$the_offer ]);
+            return response()->json(['update'=>$updated_offer,'the_updated_offer'=>$the_offer ]);
 
             }
 
@@ -179,12 +179,12 @@ public function show_company_orders(Request $request){
             }
 
             else{
-                return response()->json(['error'=>'you cant delete this offer Only the company that owned it','the offer'=>$the_offer ,'req'=>$company_id ,'cmp in BD'=>$the_offer->company_id ]);
+                return response()->json(['error'=>'you cant delete this offer Only the company that owned it','the_offer'=>$the_offer ,'req'=>$company_id ,'cmp_in_BD'=>$the_offer->company_id ],400);
             }
 
     }
     catch(Throwable $th){
-
+        return response()->json(['error'=>$th],400);
 
     }
 

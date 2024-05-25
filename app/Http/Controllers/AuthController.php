@@ -30,7 +30,7 @@ class AuthController extends Controller
     //Check if the validation failed, return your custom formatted code here.
     if($validated->fails())
     {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
     }
 
     //If not failed, the code will reach here
@@ -52,7 +52,7 @@ class AuthController extends Controller
                     'token' => $token,
                     'type' => 'bearer',
                 ]
-            ]);
+            ],200);
 
     }
 
@@ -72,7 +72,7 @@ class AuthController extends Controller
     //Check if the validation failed, return your custom formatted code here.
     if($validated->fails())
     {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],403);
     }
 //If not failed, the code will reach here
 
@@ -93,7 +93,7 @@ class AuthController extends Controller
             $specialization_id = specialization::select('id')->where('specialization' ,$request->specialization)->get()[0]->id;
             }
             else {
-                return response()->json(['error' =>$th ]);
+                return response()->json(['error' =>$th ],400);
             }
 
         }
@@ -110,7 +110,7 @@ class AuthController extends Controller
             $level_id=level::select('id')->where('level' ,$request->level)->get()[0]->id;
             }
             else {
-                return response()->json(['error' =>$th ]);
+                return response()->json(['error' =>$th ],400);
             }
         }
 
@@ -181,7 +181,6 @@ class AuthController extends Controller
            }
 
         return response()->json([
-            'status' => 'success',
             'user'=>[
             "id"=> Auth::id(),
         "name"=> Auth::user()->name,
@@ -196,7 +195,7 @@ class AuthController extends Controller
         "updated_at"=> Auth::user()->updated_at,
             ]
 
-        ]);
+        ],200);
     }
 
     public function refresh()
@@ -208,7 +207,7 @@ class AuthController extends Controller
                 'token' => Auth::refresh(),
                 'type' => 'bearer',
             ]
-        ]);
+        ],200);
     }
 
 

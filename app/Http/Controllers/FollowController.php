@@ -14,13 +14,13 @@ class FollowController extends Controller
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
         }
         $user_id=auth()->user()->id;
         $company_id=$request->company_id;
         $comp_in_db=Company::find($company_id);
         if(!$comp_in_db){
-            return response()->json(['message'=>'the company id is not true']);
+            return response()->json(['message'=>'the company id is not true'],400);
         }
         $in_DB=follow::where([['user_id','=',$user_id],['company_id','=',$company_id]])->first();
         if($in_DB==null){
@@ -42,14 +42,14 @@ class FollowController extends Controller
 
         //Check if the validation failed, return your custom formatted code here.
         if ($validated->fails()) {
-            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+            return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
         }
         $user_id=auth()->user()->id;
         $unfollow=false;
         $company_id=$request->company_id;
         $comp_in_db=Company::find($company_id);
         if(!$comp_in_db){
-            return response()->json(['message'=>'the company id is not true']);
+            return response()->json(['message'=>'the company id is not true'],400);
         }
         $in_DB=follow::where([['user_id','=',$user_id],['company_id','=',$company_id]])->first();
         if($in_DB!=null){

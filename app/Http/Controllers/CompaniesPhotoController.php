@@ -34,7 +34,7 @@ class CompaniesPhotoController extends Controller
     //Check if the validation failed, return your custom formatted code here.
     if($validated->fails())
     {
-        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()]);
+        return response()->json(['status' => 'error', 'messages' => 'The given data was invalid.', 'errors' => $validated->errors()],400);
     }
 //If not failed, the code will reach here
 
@@ -73,7 +73,7 @@ if($photo_name_in_DB !=null){
             //we create the photo only when the user dont have an id to any photo
             if($photo_id_in_company_table==null){
             $new_photo= companies_photo::create([
-                'company name'=>auth()->user()->name,
+                'company_name'=>auth()->user()->name,
                 'path' => $filename,
 
             ]);
@@ -90,7 +90,7 @@ if($photo_name_in_DB !=null){
 
 
 
-        return response()->json(['new photo'=>$new_photo[0] ,'url' =>$save_path.'\\'.$filename ,'is created in database'=>$is_created ,'photo id in the company table'=>Company::find($user_id)->photo_id  ,'photo deleted in DB'=>$photo_name_in_DB ,'deleted from storage file'=>$deleted ,'delete path'=>$save_path.'\\' .$photo_name_in_DB , 'company name'=>auth()->user()->name,'path' => $filename]);
+        return response()->json(['new_photo'=>$new_photo[0] ,'url' =>$save_path.'\\'.$filename ,'is_created_in_database'=>$is_created ,'photo_id_in_the_company_table'=>Company::find($user_id)->photo_id  ,'photo_deleted_in_DB'=>$photo_name_in_DB ,'deleted_from_storage_file'=>$deleted ,'delete_path'=>$save_path.'\\' .$photo_name_in_DB , 'company_name'=>auth()->user()->name,'path' => $filename]);
 
 
 
@@ -113,7 +113,7 @@ if($photo_name_in_DB !=null){
         $headers = ['Content-Type' => 'image/png'];
 
         if($name_from_DB==null){
-            return response()->json([null]);
+            return response()->json([null],200);
         }
 
 
@@ -122,7 +122,7 @@ if($photo_name_in_DB !=null){
 
             return response()->file($path.$name_from_DB , $headers);
         } catch (\Throwable $th) {
-            return response()->json(['errore ' => 'you didnt add an image OR the data is deleted from the server please restore the image  ' , 'exception' =>$th]);
+            return response()->json(['message' => 'you didnt add an image OR the data is deleted from the server please restore the image']);
         }
 
     }

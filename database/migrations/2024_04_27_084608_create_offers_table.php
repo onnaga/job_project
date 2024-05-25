@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->string('the job');
+            $table->string('the_job');
             $table->bigInteger('specialization_wanted')->unsigned()->nullable();
             $table->foreign('specialization_wanted')->references('id')->on('specializations')->onDelete('set null');
             $table->bigInteger('company_id')->unsigned()->nullable();
