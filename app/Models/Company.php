@@ -24,11 +24,10 @@ class Company extends Authenticatable implements JWTSubject
         'email',
         'password',
         'specialization_id',
-        'founded in',
+        'founded_in',
         'photo_id',
         'phone',
-
-
+        'area_id',
     ];
 
     /**

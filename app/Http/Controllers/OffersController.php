@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\areas;
 use App\Models\follow;
 use App\Models\offers;
 use App\Models\specialization;
@@ -37,6 +38,7 @@ public function show_company_orders(Request $request){
               //Define your validation rules here.
               $rules = [
                 'specialization_wanted' => 'required',
+                'area'=>'required',
                 'the_job' => 'required',
                 'offer_end_at'=>'required',
             ];
@@ -52,17 +54,25 @@ public function show_company_orders(Request $request){
             //save the data to the database
             $company_id = auth()->user()->id;
             $spec_name = $request->specialization_wanted;
+            $area_name=$request->area;
             $spec_in_DB=specialization::where('specialization',$spec_name)->first();
+            $area_in_DB=areas::where('area',$area_name)->first();
             if($spec_in_DB==null){
                 $spec_in_DB=specialization::create([
                     'specialization'=>$spec_name,
                 ]);
 
             }
+            if($area_in_DB==null){
+                $area_in_DB=areas::create([
+                    'area'=>$area_name,
+                ]);
+            }
             $the_offer=offers::create([
                 'the_job'=>$request->the_job,
                 'company_id'=>$company_id,
                 'specialization_wanted'=>$spec_in_DB->id,
+                'area'=>$area_in_DB->id,
                 'salary'=>$request->salary,
                 'the_days'=>$request->the_days,
                 'hour_begin'=>$request->hour_begin,
@@ -115,6 +125,7 @@ public function show_company_orders(Request $request){
           //Define your validation rules here.
         $rules = [
                 'specialization_wanted' => 'required',
+                'area' => 'required',
                 'the_job' => 'required',
                 'offer_end_at'=>'required',
             ];
@@ -128,10 +139,17 @@ public function show_company_orders(Request $request){
 
 
         $spec_name = $request->specialization_wanted;
+        $area_name = $request->area;
         $spec_in_DB=specialization::where('specialization',$spec_name)->first();
+        $area_in_DB=areas::where('area',$area_name)->first();
         if($spec_in_DB==null){
             $spec_in_DB=specialization::create([
                 'specialization'=>$spec_name,
+            ]);
+        }
+        if($area_in_DB==null){
+            $area_in_DB=areas::create([
+                'area'=>$area_name,
             ]);
         }
             $updated_offer=$the_offer->update([
@@ -139,6 +157,7 @@ public function show_company_orders(Request $request){
                     'the_job'=>$request->the_job,
                     'company_id'=>$company_id,
                     'specialization_wanted'=>$spec_in_DB->id,
+                    'area'=>$area_in_DB->id,
                     'salary'=>$request->salary,
                     'the_days'=>$request->the_days,
                     'hour_begin'=>$request->hour_begin,

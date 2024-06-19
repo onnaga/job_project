@@ -10,15 +10,16 @@ class offers extends Model
     use HasFactory;
 
     protected $fillable = [
-        'the job',
+        'the_job',
         'company_id',
         'specialization_wanted',
         'salary',
-        'the days',
-        'hour begin',
+        'the_days',
+        'hour_begin',
         'period',
-        'official holidays',
-        'offer end at'
+        'official_holidays',
+        'offer_end_at',
+        'area_id'
     ];
 
 }

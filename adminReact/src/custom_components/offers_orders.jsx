@@ -202,7 +202,7 @@ if (searchAbout!=probs.searchAbout || sortBy!=probs.sort_by){
           </th>
           <td>{obj.company_id}</td>
           <td>{obj.hour_begin}</td>
-      <td>{obj.official_holidays}</td>
+      <td>{obj.official_holidays==1?"true":"false"}</td>
       <td>{obj.period}</td>
       <td>{obj.salary}</td>
       <td>{obj.specialization_wanted}</td>
@@ -257,7 +257,7 @@ if (searchAbout!=probs.searchAbout || sortBy!=probs.sort_by){
           <th scope="row">{obj.id}</th>
           <td>{obj.company_id}</td>
           <td>{obj.hour_begin}</td>
-      <td>{obj.official_holidays}</td>
+      <td>{obj.official_holidays==1?"true":"false"}</td>
       <td>{obj.period}</td>
       <td>{obj.salary}</td>
       <td>{obj.specialization_wanted}</td>

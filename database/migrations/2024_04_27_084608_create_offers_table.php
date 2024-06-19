@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('the_job');
             $table->bigInteger('specialization_wanted')->unsigned()->nullable();
             $table->foreign('specialization_wanted')->references('id')->on('specializations')->onDelete('set null');
+            $table->bigInteger('area_id')->unsigned()->nullable();
+            $table->foreign('area_id')->references('id')->on('areas')->onDelete('set null');
             $table->bigInteger('company_id')->unsigned()->nullable();
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
             $table->integer('salary')->nullable();

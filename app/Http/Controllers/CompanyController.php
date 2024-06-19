@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\areas;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -101,6 +101,26 @@ class CompanyController extends Controller
 
 
         }
+
+
+        $area_id=null;
+        if($request->has('area') ){
+            try {
+                $area_id = areas::select('id')->where('area' ,$request->area)->get()[0]->id;
+            } catch (\Throwable $th) {
+                if (($area_id==null)){
+                areas::create(['area' =>$request->area]);
+                $area_id = areas::select('id')->where('area' ,$request->area)->get()[0]->id;
+                }
+                else {
+                    return response()->json(['error' =>$th ],400);
+                }
+
+            }
+
+
+        }
+
         $Age =null;
         $Born=null;
         // to calculate the priod  from the date
@@ -116,6 +136,7 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'specialization_id'=> $specialization_id,
+                    'area_id'=> $area_id,
                     'phone'=>$request->phone,
                     'founded_in'=>$request->found_date,
                 ]);
@@ -126,6 +147,7 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
         }
 
         //All went well
+
         auth('apiCompany')->login($company);
         $credentials = $request->only('email', 'password');
         $token = auth('apiCompany')->attempt($credentials);
@@ -211,7 +233,71 @@ $Age = $Born->diff(Carbon::now())->format('%Y year _%M month_%D day');
         ]);
     }
 
+    public function add_personal_data(Request $request)
+    {
+        $company_id = auth('apiCompany')->user()->id;
+        $the_company = Company::find($company_id);
+        $specialization_id = $the_company->specialization_id;
+        $area_id = $the_company->area_id;
+        $name = $the_company->name;
+        $phone =$the_company->phone;
+        $found_date = $the_company->found_date;
 
+
+
+
+            //insert the specialization in specializations table
+            if($request->has('specialization')&& !empty($request->specialization) ){
+                $specialization = $request->specialization;
+            $specialization_in_DB = specialization::where(['specialization'=>$specialization])->first();
+            if(!empty($specialization_in_DB)){
+                $specialization_id =$specialization_in_DB->id;
+            }
+            else{
+                $specialization_in_DB =  specialization::create([
+                    'specialization'=>$specialization
+                ]);
+                $specialization_id =$specialization_in_DB->id;
+            }
+            }
+            //insert the area in specializations table
+            if($request->has('area') && !empty($request->area)){
+                $area = $request->area;
+                $area_in_DB = areas::where(['area'=>$area])->first();
+                if(!empty($area_in_DB)){
+                    $area_id =$area_in_DB->id;
+                }
+                else{
+                    $area_in_DB =  areas::create([
+                        'area'=>$area
+                    ]);
+                    $area_id =$area_in_DB->id;
+                }
+            }
+
+            if($request->has('name')&& !empty($request->name)){
+                $name = $request->name;
+            }
+            if($request->has('phone') && !empty($request->phone) ){
+                $phone = $request->phone;
+
+            }
+            if($request->has('found_date') && !empty($request->found_date)){
+                $found_date = $request->found_date;
+            }
+
+        $the_company = Company::find($company_id)->update([
+            'name'=>$name,
+            "specialization_id"=> $specialization_id,
+            "area_id"=> $area_id,
+            "phone"=> $phone,
+            "founded_in"=> $found_date,
+        ]);
+
+    return response()->json(["Phone"=>$phone , 'founded_in '=> $found_date]);
+
+
+    }
 
 
 

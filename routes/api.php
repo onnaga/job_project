@@ -24,6 +24,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
     Route::get('me', 'me');
+    Route::post('add_personal_data', 'add_personal_data');
 });
 
 
@@ -33,6 +34,7 @@ Route::controller(CompanyController::class)->group(function () {
     Route::post('compLogout', 'logout');
     Route::post('compRefresh', 'refresh');
     Route::get('compMe', 'me');
+    Route::post('company_add_personal_data', 'add_personal_data');
 });
 
 Route::controller(PhotoController::class)->group(function(){

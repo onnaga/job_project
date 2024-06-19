@@ -177,11 +177,11 @@ $req_offer_id =$request->offer_id;
 if (!$sort_by) {
     if ($request->search_about == 'Offers'){
         if ($company_id!='false') {
-    $ended_offers=offers::where([['company_id',$company_id],['offer end at','<=',Carbon::now()]])->get();
-    $recent_offers=offers::where([['company_id',$company_id],['offer end at','>',Carbon::now()]])->get();
+    $ended_offers=offers::where([['company_id',$company_id],['offer_end_at','<=',Carbon::now()]])->get();
+    $recent_offers=offers::where([['company_id',$company_id],['offer_end_at','>',Carbon::now()]])->get();
         }else{
-    $ended_offers=offers::where([['offer end at','<=',Carbon::now()]])->get();
-    $recent_offers=offers::where([['offer end at','>',Carbon::now()]])->get();
+    $ended_offers=offers::where([['offer_end_at','<=',Carbon::now()]])->get();
+    $recent_offers=offers::where([['offer_end_at','>',Carbon::now()]])->get();
         }
     return response()->json([
         'number_of_ended'=>sizeof($ended_offers),
@@ -219,11 +219,11 @@ else{
 else{
     if ($request->search_about == 'Offers'){
         if ($company_id!='false') {
-            $ended_offers=offers::where([['company_id',$company_id],['offer end at','<=',Carbon::now()]])->get();
-            $recent_offers=offers::where([['company_id',$company_id],['offer end at','>',Carbon::now()]])->get();
+            $ended_offers=offers::where([['company_id',$company_id],['offer_end_at','<=',Carbon::now()]])->get();
+            $recent_offers=offers::where([['company_id',$company_id],['offer_end_at','>',Carbon::now()]])->get();
                 }else{
-            $ended_offers=offers::where('offer end at','<=',Carbon::now())->get();
-            $recent_offers=offers::where('offer end at','>',Carbon::now())->get();
+            $ended_offers=offers::where('offer_end_at','<=',Carbon::now())->get();
+            $recent_offers=offers::where('offer_end_at','>',Carbon::now())->get();
                 }
         foreach ($ended_offers as $offer) {
             $offer_id = $offer->id;
@@ -275,8 +275,8 @@ return response()->json([
 public function getAllCompanies(Request $request){
     $company_id =$request->company_id;
     if($company_id!='false'){
-        $ended_offers=offers::where([['company_id',$company_id],['offer end at','<=',Carbon::now()]])->get();
-        $recent_offers=offers::where([['company_id',$company_id],['offer end at','>',Carbon::now()]])->get();
+        $ended_offers=offers::where([['company_id',$company_id],['offer_end_at','<=',Carbon::now()]])->get();
+        $recent_offers=offers::where([['company_id',$company_id],['offer_end_at','>',Carbon::now()]])->get();
         foreach ($ended_offers as $offer) {
                 //make specialization_id name
                 $specId =$offer->specialization_wanted;

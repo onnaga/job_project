@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('password');
             $table->bigInteger('specialization_id')->unsigned()->nullable();
             $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('set null');
+            $table->bigInteger('area_id')->unsigned()->nullable();
+            $table->foreign('area_id')->references('id')->on('areas')->onDelete('set null');
             $table->bigInteger('level_id')->unsigned()->nullable();
             $table->foreign('level_id')->references('id')->on('levels')->onDelete('set null');
             $table->bigInteger('photo_id')->unsigned()->nullable();
