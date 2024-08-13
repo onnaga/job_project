@@ -17,13 +17,13 @@ export const ContextProvider =({children})=>{
     const setUser = (use)=>{
         localStorage.setItem('User',JSON.stringify(use))
         _setUser(use)
-        debugger
+
     }
 
     const  setRemember_me = (Rem)=>{
         localStorage.setItem('Remember',Rem)
         _setRemember(Rem)
-        debugger
+
     }
 
     const setToken=(token)=>{

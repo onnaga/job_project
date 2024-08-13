@@ -32,13 +32,16 @@ const doOnSubmit =(e)=>{
                     return [...previosErr,err[1][0]]
                 })
             });
+
 //there we delete the errors from the array
             setTimeout(() => {
 
             setErrors([])
             }, 2000);
 
-        }
+
+
+    }
 
 //if the validation worked
 else{
@@ -48,17 +51,21 @@ else{
   setRemember_me(response.data.rememberMe)
 
 }
-    } , (err)=>{
+
+} , (err)=>{
       if (err.response && err.response.status>=500) {
 
         setErrors((previosErr)=>{
 
           console.log(err);
+
           return [...previosErr,`${err.response.statusText}  please try again later`]
       })
 
       }else{
         setErrors((previosErr)=>{
+            print(err);
+
           return [...previosErr,`${ err.response.data.message}`]
       })
       }
